@@ -1,3 +1,8 @@
+CREATE DATABASE modelo_parcial_Trancito;
+GO
+USE modelo_parcial_Trancito;
+GO
+
 CREATE TABLE Inspector
 (
   id_inspector INT NOT NULL,
@@ -143,49 +148,83 @@ CHECK (LEN(dni_conductor) = 8 AND ISNUMERIC(dni_conductor) = 1);
 -- LOTES DE DATOS ------
 ------------------------
 
+SELECT * FROM Inspector;
 INSERT INTO Inspector (id_inspector, nombre_inspector, apellido_inspector)
 VALUES (1, 'Juan', 'Pérez'), (2, 'María', 'Gómez'), (3, 'Carlos', 'López');
 
-
+SELECT * FROM Pais;
 INSERT INTO Pais (id_pais, nombre_pais)
 VALUES (1, 'Argentina'), (2, 'Brasil'), (3, 'Chile');
 
+SELECT * FROM Provincia;
 INSERT INTO Provincia (id_provincia, nombre_provincia, id_pais)
 VALUES (1, 'Santa Fe', 1), (2, 'Buenos Aires', 1), (3, 'São Paulo', 2);
 
+SELECT * FROM Localidad;
 INSERT INTO Localidad (id_localidad, nombre_localidad, id_provincia)
 VALUES (1, 'Rosario', 1), (2, 'Cañada de Gómez', 1), (3, 'Campinas', 3);
 
+SELECT * FROM Conductor;
 INSERT INTO Conductor (id_conductor, nombre_conductor, apellido_conductor, dni_conductor, domicilio_conductor)
 VALUES (1, 'Ana', 'Martínez', '12345678', 'Calle Falsa 123'),
 (2, 'Luis', 'Rodríguez', '87654321', 'Avenida Siempre Viva 742'),
 (3, 'Sofía', 'Fernández', '11223344', 'Boulevard de los Sueños 456');
 
+SELECT * FROM Vehiculo;
 INSERT INTO Vehiculo (id_vehiculo, patente_vehiculo, marca_vehiculo, modelo_vehiculo, añoFabricacion_vehiculo, nroChasis_vehiculo, id_conductor)
 VALUES 
-(1, 'ABC123', 'Toyota', '2020-01-01', '2019-01-01', 123456, 1),
-(2, 'DEF456', 'Ford', '2021-01-01', '2020-01-01', 654321, 2),
-(3, 'GHI789', 'Chevrolet', '2019-01-01', '2018-01-01', 789012, 3);
+(1, 'ABC123', 'Toyota', '2020-01-01', '2019-01-01', '123456', 1),
+(2, 'DEF456', 'Ford', '2021-01-01', '2020-01-01', '654321', 2),
+(3, 'GHI789', 'Chevrolet', '2019-01-01', '2018-01-01', '789012', 3);
 
+SELECT * FROM Carnet_Conductor;
 INSERT INTO Carnet_Conductor (id_carnetConduc, nro_carnet, id_localidad, id_conductor)
 VALUES (1, 1001, 1, 1), (2, 1002, 2, 2), (3, 1003, 3, 3);
 
+SELECT * FROM Tarjeta_Seguro;
 INSERT INTO Tarjeta_Seguro (id_tarjetaSeguro, nro_poliza_seguro, vencimiento_seguro, monto_seguro, empresa_seguro, id_vehiculo)
 VALUES 
 (1, 2001, '2025-01-01', 15000.50, 'Seguro S.A.', 1),
 (2, 2002, '2024-12-31', 12000.75, 'Protección Total', 2),
 (3, 2003, '2025-06-30', 18000.00, 'Aseguradora Global', 3);
 
+SELECT * FROM Acta;
+INSERT INTO Acta (id_acta, id_carnetConduc, id_tarjetaVerde, id_tarjetaSeguro, id_inspector)
+VALUES 
+(1, 1, 1, 1, 1),
+(2, 2, 2, 2, 2),
+(3, 3, 3, 3, 3),
+(4, 1, 2, 3, 1),
+(5, 2, 3, 1, 2),
+(6, 3, 1, 2, 3);
+
+SELECT * FROM Infraccion;
 INSERT INTO Infraccion (id_infraccion, fecha_infraccion, lugar_infraccion, descripcion_infraccion, id_acta)
 VALUES 
 (1, '2024-09-01', 'Calle Principal', 'Exceso de velocidad', 1),
 (2, '2024-09-05', 'Avenida Central', 'Estacionamiento indebido', 2),
 (3, '2024-09-10', 'Boulevard Norte', 'Conducción temeraria', 3);
 
+SELECT * FROM Descripcion_Infraccion;
 INSERT INTO Descripcion_Infraccion (id_descripInfraccion, importeaPagar_descripInfraccion, fechaVencimiento_descripInfraccion, id_infraccion)
 VALUES 
 (1, 5000.00, '2024-10-01', 1),
 (2, 3000.00, '2024-10-05', 2),
 (3, 7000.00, '2024-10-10', 3);
+
+
+---- Validacion de restricciones
+
+---- Salta la restrinccion de UQ_DNI
+INSERT INTO Conductor (id_conductor, nombre_conductor, apellido_conductor, dni_conductor, domicilio_conductor)
+VALUES (4, 'Juana', 'Tartínez', '12345678', 'Calle Falsa 321');
+
+--- Salta la restrinccion de CK_LEN_DNI
+INSERT INTO Conductor (id_conductor, nombre_conductor, apellido_conductor, dni_conductor, domicilio_conductor)
+VALUES (5, 'Juana', 'Tartínez', '12345678910', 'Calle Falsa 321');
+
+---- Salta la restriccion de UQ_patente
+INSERT INTO Vehiculo (id_vehiculo, patente_vehiculo, marca_vehiculo, modelo_vehiculo, añoFabricacion_vehiculo, nroChasis_vehiculo, id_conductor)
+VALUES (4, 'ABC123', 'Fiat', '2020-01-01', '2019-01-01', '123456', 1);
 
 
